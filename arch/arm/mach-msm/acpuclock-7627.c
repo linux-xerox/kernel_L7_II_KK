@@ -316,7 +316,7 @@ static struct clkctl_acpu_speed pll0_960_pll1_196_pll2_1200_pll4_1401[] = {
 static struct clkctl_acpu_speed pll0_960_pll1_245_pll2_1200_pll4_1008_2p0[] = {
 	{ 0, 19200, ACPU_PLL_TCXO, 0, 0, 2400, 3, 0, 30720 },
 	{ 0, 61440, ACPU_PLL_1, 1, 3,  7680, 3, 0, 61440 },
-	{ 0, 122880, ACPU_PLL_1, 1, 1,  15360, 3, 1, 61440 },
+	{ 1, 122880, ACPU_PLL_1, 1, 1,  15360, 3, 1, 61440 },
 	{ 1, 245760, ACPU_PLL_1, 1, 0, 30720, 3, 1, 61440 },
 	{ 0, 300000, ACPU_PLL_2, 2, 3, 37500, 3, 2, 122880 },
 	{ 1, 320000, ACPU_PLL_0, 4, 2, 40000, 3, 2, 122880 },
@@ -598,7 +598,7 @@ static int acpuclk_set_vdd_level(int vdd)
 	       current_vdd, vdd);
 
 	writel_relaxed((1 << 7) | (vdd << 3), A11S_VDD_SVS_PLEVEL_ADDR);
-	mb();
+	mb();{ 0 , 61440 , ACPU_PLL_1, 1 , 3 ,   7680 , 3 , 0 , 61440 },
 	udelay(62);
 	if ((readl_relaxed(A11S_VDD_SVS_PLEVEL_ADDR) & 0x7) != vdd) {
 		pr_err("VDD set failed\n");
