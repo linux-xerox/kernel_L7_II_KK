@@ -815,18 +815,6 @@ static enum hrtimer_restart tick_sched_timer(struct hrtimer *timer)
 		if (tick_do_timer_cpu == smp_processor_id())
  			msm_update_rq_stats();
  #endif
-		if ((rq_info.init == 1) && (tick_do_timer_cpu == cpu)) {
-
-			/*
-			 * update run queue statistics
-			 */
-			update_rq_stats();
-
-			/*
-			 * wakeup user if needed
-			 */
-			wakeup_user();
-		}
 	}
 
 	hrtimer_forward(timer, now, tick_period);
