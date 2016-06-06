@@ -32,6 +32,68 @@
 #define DEFAULT_RQ_POLL_JIFFIES 1
 #define DEFAULT_DEF_TIMER_JIFFIES 5
 
+Struct rq_data {
+ 	  Sin sacrificar las exigencias  int rq_avg;
+ 	  Sin sacrificar las exigencias  Largos rq_poll_jiffies;
+ 	  Sin sacrificar las exigencias  Largos def_timer_jiffies;
+ 	  Sin sacrificar las exigencias  de un largo rq_poll_last_jiffy;
+ 	  Sin sacrificar las exigencias  Largos rq_poll_total_jiffies;
+ 	  Sin sacrificar las exigencias  de un largo def_timer_last_jiffy;
+ 	  Sin sacrificar las exigencias  int def_interval;
+ 	  Int64_t def_start_time;
+ 	  Struct attribute_group * attr_group;
+ 	  Struct kobject * kobj;
+ 	  Struct work_struct def_timer_work;
+ 	  Int init;
+ };
+  Estática  Estructura rq_data rq_info;
+ 
+  Estática  Estructura workqueue_struct * rq_wq;
+  Estática  spinlock_t rq_lock;
+ 
+  Void  msm_update_rq_stats ( void )
+ {
+ 	  Sin sacrificar las exigencias  Largas Banderas, jiffy_gap;
+ 	  Sin sacrificar las exigencias  int rq_avg;
+ 
+ 	  Si (! Rq_info. Init )
+ 		  Volver ;
+ 
+  = Jiffies Jiffy_gap - rq_info. Rq_poll_last_jiffy ;
+ 	  Si (jiffy_gap> = rq_info. Rq_poll_jiffies ) {
+ 
+ 		  Spin_lock_irqsave (y rq_lock, banderas);
+ 
+ 		  Si (! Rq_info. Rq_avg )
+ .  Rq_info rq_poll_total_jiffies = 0 ;
+ 
+  = Rq_avg nr_running () * 10 ;
+ 
+ 		  Si (rq_info. Rq_poll_total_jiffies ) {
+  Rq_avg = (rq_avg * jiffy_gap) +
+  (Rq_info. Rq_avg *
+ .  Rq_info rq_poll_total_jiffies );
+ 			  Do_div (rq_avg,
+ .  Rq_info rq_poll_total_jiffies + jiffy_gap);
+ }
+ 
+  Rq_info. Rq_avg = rq_avg;
+ .  Rq_info rq_poll_total_jiffies + = jiffy_gap;
+ .  Rq_info Rq_poll_last_jiffy = unidades de Tiempo;
+ 
+ 		  Spin_unlock_irqrestore (y rq_lock, banderas);
+ }
+ 
+ 	  / *
+  	 * Despertador usuario Si Es Necesario
+  	 * /
+  = Jiffies Jiffy_gap - rq_info. Def_timer_last_jiffy ;
+ 	  Si (jiffy_gap> = rq_info. Def_timer_jiffies ) {
+ .  Rq_info Def_timer_last_jiffy = unidades de Tiempo;
+ 		  Queue_work (Rq_wq, y rq_info. Def_timer_work );
+ }
+ }
+ 
 static void def_work_fn(struct work_struct *work)
 {
 	int64_t diff;
